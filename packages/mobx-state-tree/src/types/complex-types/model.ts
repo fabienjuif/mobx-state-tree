@@ -165,8 +165,16 @@ export class ModelType<S, T> extends ComplexType<S, T> implements IModelType<S, 
                     `Cannot define action '${PRE_PROCESS_SNAPSHOT}', it should be defined using 'type.preProcessSnapshot(fn)' instead`
                 )
 
-            // apply hook composition
             let action = actions[name]
+
+            // apply flow
+            // FIXME: fix cast
+            if ((action as any).$mst_flow) {
+                action = (action as any).spawner(name)
+            }
+            /* tslint:enable */
+
+            // apply hook composition
             let baseAction = (self as any)[name]
             if (name in HOOK_NAMES && baseAction) {
                 let specializedAction = action
