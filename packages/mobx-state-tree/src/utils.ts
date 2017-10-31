@@ -178,3 +178,8 @@ deprecated = function(id: string, message: string): void {
 }
 deprecated.ids = {}
 export { deprecated }
+
+const GeneratorType = function*(): IterableIterator<any> {}.constructor
+export function isGenerator(fn: Function): boolean {
+    return fn instanceof GeneratorType
+}

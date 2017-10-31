@@ -14,6 +14,7 @@ import {
     fail,
     isPlainObject,
     isPrimitive,
+    isGenerator,
     EMPTY_ARRAY,
     EMPTY_OBJECT,
     addHiddenFinalProp
@@ -39,6 +40,7 @@ import {
 } from "../type-checker"
 import { getPrimitiveFactoryFromValue, undefinedType } from "../primitives"
 import { optional } from "../utility-types/optional"
+import { flow } from "../../core/flow"
 
 const PRE_PROCESS_SNAPSHOT = "preProcessSnapshot"
 
@@ -165,8 +167,14 @@ export class ModelType<S, T> extends ComplexType<S, T> implements IModelType<S, 
                     `Cannot define action '${PRE_PROCESS_SNAPSHOT}', it should be defined using 'type.preProcessSnapshot(fn)' instead`
                 )
 
-            // apply hook composition
             let action = actions[name]
+
+            // apply flow
+            if (isGenerator(action)) {
+                action = flow(name, action as any)
+            }
+
+            // apply hook composition
             let baseAction = (self as any)[name]
             if (name in HOOK_NAMES && baseAction) {
                 let specializedAction = action
