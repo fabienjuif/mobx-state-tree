@@ -54,15 +54,15 @@ export function process<A1, A2, A3, A4, A5, A6, A7, A8>(
  */
 export function process(asyncAction: any): any {
     deprecated("process", "`process()` has been renamed to `flow()`. " + DEPRECATION_MESSAGE)
-    return flow(asyncAction.name, asyncAction)
+    return flow(asyncAction)
 }
 
-export function createProcessSpawner(name: string, generator: Function) {
+export function createProcessSpawner(generator: Function) {
     deprecated(
         "process",
         "`createProcessSpawner()` has been renamed to `createFlowSpawner()`. " + DEPRECATION_MESSAGE
     )
-    return createFlowSpawner(name, generator)
+    return createFlowSpawner(generator)
 }
 
 import { deprecated } from "../utils"

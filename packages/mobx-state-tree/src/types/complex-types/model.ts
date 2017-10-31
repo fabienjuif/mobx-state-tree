@@ -14,7 +14,6 @@ import {
     fail,
     isPlainObject,
     isPrimitive,
-    isGenerator,
     EMPTY_ARRAY,
     EMPTY_OBJECT,
     addHiddenFinalProp
@@ -40,7 +39,6 @@ import {
 } from "../type-checker"
 import { getPrimitiveFactoryFromValue, undefinedType } from "../primitives"
 import { optional } from "../utility-types/optional"
-import { flow } from "../../core/flow"
 
 const PRE_PROCESS_SNAPSHOT = "preProcessSnapshot"
 
@@ -170,9 +168,11 @@ export class ModelType<S, T> extends ComplexType<S, T> implements IModelType<S, 
             let action = actions[name]
 
             // apply flow
-            if (isGenerator(action)) {
-                action = flow(name, action as any)
+            // FIXME: fix cast
+            if ((action as any).$mst_flow) {
+                action = (action as any).spawner(name)
             }
+            /* tslint:enable */
 
             // apply hook composition
             let baseAction = (self as any)[name]
